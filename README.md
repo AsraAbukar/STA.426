@@ -37,7 +37,7 @@ You also can make sublists.
   For your sake of sanity, I will stop with the lists
 
 Okay I will make one more list. I need to go grocery shopping to get the ingredients of my favorite ![soup](https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Tomato_soup.jpg/390px-Tomato_soup.jpg)  
-Have you notice, depending on the language selected [wikipedia](https://de.wikipedia.org/wiki/Wikipedia:Hauptseite) shows different images of soups.  
+Have you noticed, depending on the language selected [wikipedia](https://de.wikipedia.org/wiki/Wikipedia:Hauptseite) shows different images of soups.  
 **Okay for the soup you need to get:**
 1. [Curry][Migros]
 2. [Butter][Migros]
