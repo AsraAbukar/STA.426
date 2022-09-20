@@ -49,6 +49,6 @@ Have you noticed, depending on the language selected [wikipedia](https://de.wiki
 
 [Migros]: https://www.migros.ch/de
 [coop]:https://www.coop.ch/de/
-That is it for the turorial for now 
+That's it for the turorial for now 
 
 
