@@ -1,0 +1,69 @@
+---
+title: "Exercise 1B"
+format:
+  html:
+    theme: default
+---
+
+## Generation of a histogram of sampled data 
+
+To create the histogram we need to sample the values. Here we are going to sample from a negative binomial distribution. 
+
+The given parameter are 
+mu = 10
+dispersion =2 
+sample size n=100
+
+Since we are sampling random values. It it could be beneficial to use the function set.seed() to get the same "random" values 
+
+```{r}
+set.seed(1) #to get the same results when running the code 
+n=100
+mu= 10
+dispersion = 2
+
+```
+
+## Sampling 
+now that we have all needed parameter we can sample
+
+```{r}
+x= rnbinom(100, mu=mu,size = dispersion)
+x
+``` 
+
+
+## Histograms
+
+
+### linear scale 
+```{r}
+
+hist(x, main = "Histogram of the sampled data (linear)")
+
+
+``` 
+### log scale 
+```{r}
+hist(log(x+1), xlab = "log(x+1)", main = "Histogram of the sampled data (log)" )
+```
+
+##Comparing mean and variance 
+
+**mean and Variance of the sample**
+```{r}
+mean(x)
+var(x)
+
+```
+
+**given parameter**
+```{r}
+mean = mu
+Variance = mu + mu^2 *dispersion
+
+mean
+Variance 
+
+```
+
