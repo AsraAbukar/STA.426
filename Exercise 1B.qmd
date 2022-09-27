@@ -28,7 +28,7 @@ dispersion = 2
 now that we have all needed parameter we can sample
 
 ```{r}
-x= rnbinom(100, mu=mu,size = dispersion)
+x= rnbinom(100, mu=mu,size = 1/dispersion)
 x
 ``` 
 
