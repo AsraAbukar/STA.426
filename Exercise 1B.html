@@ -138,13 +138,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2 class="anchored" data-anchor-id="sampling">Sampling</h2>
 <p>now that we have all needed parameter we can sample</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>x<span class="ot">=</span> <span class="fu">rnbinom</span>(<span class="dv">100</span>, <span class="at">mu=</span>mu,<span class="at">size =</span> dispersion)</span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>x<span class="ot">=</span> <span class="fu">rnbinom</span>(<span class="dv">100</span>, <span class="at">mu=</span>mu,<span class="at">size =</span> <span class="dv">1</span><span class="sc">/</span>dispersion)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  [1]  7  4  7  4  6 10  3 15  8 15 17  3  7 12  4 17  9  3  8 18  5 14  1 12 12
- [26]  8  3  2 22 11 12  1  1 15  8  3  5  8  7  5  8  7 16  5  6  7  2  3  3  1
- [51]  2 15 15  4 16 10  6  7 17 11 12  7  4  2  0  0  3  7  9  1  2  6 10  8  7
- [76] 28 10  2 20 19  1  5 10  6  6  3  7 21  1  4  5 19 18  7  8 14  0 24  0  7</code></pre>
+<pre><code>  [1]  2 37  0 15  0  0  4  9  0  3  8  0  2  3 29  2  6  0  1  0  8  9 16  5  0
+ [26]  8  0  0  2  7  0  0  2  2 14  4 24 28  9 12  1  1 52  1  0  3 12  9 29  5
+ [51] 49  9  6  1  5  0  2 15  0  2  8 12  3  2 11 18  4  0  3 74 12  4  0 70 31
+ [76]  5  4  1 22 67 41  1  1 18 38 15 10 43  0  1  0  1 37  0  0  2  9  9  0 32</code></pre>
 </div>
 </div>
 </section>
@@ -172,11 +172,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 8.16</code></pre>
+<pre><code>[1] 10.82</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 36.76202</code></pre>
+<pre><code>[1] 255.3208</code></pre>
 </div>
 </div>
 <p><strong>given parameter</strong></p>

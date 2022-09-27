@@ -17,6 +17,10 @@ sample size n=100
 Since we are sampling random values. It it could be beneficial to use the function set.seed() to get the same "random" values 
 
 ```{r}
+```
+
+
+```{r}
 set.seed(1) #to get the same results when running the code 
 n=100
 mu= 10
