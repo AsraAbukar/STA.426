@@ -1,0 +1,327 @@
+---
+title: "Exercise 4"
+format:
+  html:
+     self-contained: true
+editor: source
+editor_options: 
+  chunk_output_type: console
+---
+
+# Exercise 4
+
+loading libraries
+
+```{r}
+library("limma")
+library("ggplot2")
+```
+
+*Setting parameters*
+
+```{r}
+nGenes <- 10000                   # number of "features"
+nSamples <- 6                     # number of samples (split equal in 2 groups)
+pDiff <- .1                       # percent of genes "differential 
+grp <- rep(0:1,each=nSamples/2)   # dummy variable for exp. group
+trueFC <- 2                       # log-fold-change of truly DE
+
+d0 <- 1                     # residual standard deviation pooled
+s0 <- 0.8
+sd <- s0*sqrt(d0/rchisq(nGenes,df=d0))  # dist'n of s.d.
+```
+
+Generating table of (null) data
+
+```{r}
+y <- matrix(rnorm(nGenes*nSamples,sd=sd),
+            nr=nGenes,nc=nSamples)
+```
+
+We add in "differential expression", randomly chosen to be in the positve or negative direction, to set of indices chosen:
+
+```{r}
+indD <- 1:floor(pDiff*nGenes)
+diff <- sample(c(-1,1),max(indD),replace=TRUE)*trueFC
+y[indD,grp==1] <- y[indD,grp==1] + diff
+```
+
+## Question 1
+
+Exploratory analysis of the true and observed variances
+
+residual variance for each row
+
+```{r}
+n1=3
+n2=3
+
+observed_variance = c()
+for (i in 1:10000){
+ observed_variance[i] = ((n1-1)*var(y[i,1:3]) + (n2-1)*var(y[i,4:6]))/(n1+n2-2) 
+}
+par(mfrow=c(1,2))
+hist(observed_variance, breaks = 100)
+hist(sd,breaks =10)
+
+```
+
+in log-scale
+```{r}
+par(mfrow=c(1,2))
+hist(log(observed_variance), breaks = 100)
+hist(log(sd),breaks =100)
+```
+
+scatter plot
+
+```{r}
+plot(observed_variance,sd^2, main = "Scatter plot true vs observed", xlab= "observed variance", ylab= "true variance", log = "xy")
+```
+the observed nd the true variances dont vary that much  
+
+## Question 2
+
+"differential expression" changes the mean of the feature (genes). the diff was "added" to the grp==1 columns of the first 1000 rows
+
+```{r}
+gene_A_WT =y[which(diff==2)[1],1:3]
+gene_A_mut =y[which(diff==2)[1],4:6]
+
+boxplot(gene_A_WT, gene_A_mut, ylab= "gene A", col= c("blue", "red"), names = c("WT","mut"))
+
+gene_B_wt = y[which(diff==-2)[1],1:3]
+gene_B_mut =y[which(diff==-2)[1],4:6]
+
+boxplot(gene_B_wt,gene_B_mut, ylab= "gene B", col= c("blue", "red"), names = c("WT","mut"))
+
+```
+
+Next we create a design matrix to represent the linear model fit (to each row of the table) by limma
+
+```{r}
+(design = model.matrix(~grp))
+```
+
+## Question 3
+
+> in terms of the model that is fit for each feature, what is the interpretation of the two columns of this design matrix?
+
+Linear model fit for each feature
+
+```{r}
+fit= lmFit(y,design)
+fit = eBayes(fit)
+
+names(fit)
+```
+
+The true differential "status"
+
+```{r}
+cols = rep("non-differential", nrow(y))
+cols[indD] = "differential"
+
+qplot(y=fit$t[,2])+geom_point(aes(colour = cols))
+```
+
+the coefficients
+
+```{r}
+fit$coefficients
+```
+
+*answer to Question 3* The first column is the intercept and the 2nd column the slope. The intercept is parameterised for the mean expression of the first group (0) and the second column is parameterised for the mean expression of the 2nd group (1) relative to the first group (0). The slope tells us how much the gene expression of each genes changes from 1st and 2nd group. 
+
+##Question 4
+
+Calculate for each row of y classical two sample t-test
+
+T.Test with common variance
+```{r}
+t_values = c()
+p_values = c()
+for (i in 1:nrow(y)){
+  t_values[i] = t.test(y[i,4:6],y[i,1:3], var.equal = T)$statistic
+  p_values[i] = t.test(y[i,4:6],y[i,1:3], var.equal = T)$p.value
+}
+
+```
+
+Add visualisation
+
+```{r}
+cols = rep("non-differential", nrow(y))
+cols[indD] = "differential"
+
+qplot(y=t_values)+geom_point(aes(colour = cols))
+```
+
+*log-fold-change*
+
+```{r}
+#calculate the mean of each gene per control group
+WT = apply(y[,1:3], 1, mean)
+
+#calcuate the mean of each gene per test group
+mut = apply(y[, 4:6], 1, mean) 
+
+#foldchange 
+foldchange = mut-WT
+
+cols = rep("non-differential", nrow(y))
+cols[indD] = "differential"
+
+qplot(y=foldchange)+geom_point(aes(colour = cols))
+
+```
+
+The moderated t-test is seems to be better in separating the differential from non differential expressed genes. The fold change performs the worst in separating the truly differential from the non-differential. 
+
+
+## Question 5
+
+*False discovery plot*
+
+for the classical t-test
+```{r}
+library(fdrtool)
+
+p.value = as.vector(fit$p.value)
+
+windows(10,5) #to avoid getting the figure margins too large error 
+fdr = fdrtool(p.value, statistic = "pvalue")
+
+```
+
+for the two-sample t-test
+```{r}
+windows(10,5) #to avoid getting the figure margins too large error 
+fdr = fdrtool(p_values, statistic = "pvalue")
+```
+
+log-Fold chnage 
+
+
+
+
+
+unzipping and loading the data
+```{r}
+library("affy")
+library("preprocessCore")
+unzip("affy_estrogen.zip")
+ddir <- "affy_estrogen"
+dir(ddir)
+
+```
+
+
+```{r}
+# preprocess affymetrix data
+targets <- readTargets("targets.txt", path=ddir)
+targets$time.h <- factor(targets$time.h)
+targets
+```
+
+```{r}
+abatch <- ReadAffy(filenames=targets$filename,
+                   celfile.path=ddir)
+eset <- rma(abatch)  # bg correct, normalize, summarize
+```
+
+
+summary of the dataset using *multidimensional scaling plot*
+>(the distance on the plot approximated the log2 fold changes)
+
+```{r}
+mds <- plotMDS( exprs(eset), plot = FALSE)  # MDS plot
+qplot(x=mds$x, mds$y) + 
+  geom_point(aes(shape=targets$estrogen, 
+                 colour=targets$time.h), size=4)
+```
+
+
+*creating the design matrix*
+```{r}
+# do the limma modeling
+f <- paste(targets$estrogen,targets$time.h,sep="")
+f <- factor(f)
+
+# create design matrix
+design <- model.matrix(~0+f)
+colnames(design) <- levels(f)
+design
+```
+
+*fitting the model*
+```{r}
+fit <- lmFit(eset, design)
+```
+
+*defining the conttast matrix*
+```{r}
+cont.matrix <- makeContrasts(E10="present10-absent10",
+                             E48="present48-absent48",
+                             Time="absent48-absent10",levels=design)
+cont.matrix
+```
+
+*fit the contrast to the model*
+
+```{r}
+fit2  <- contrasts.fit(fit, cont.matrix)
+fit2  <- eBayes(fit2)
+class(fit2)
+```
+
+```{r}
+names(fit2)
+```
+
+*summarize the differential expression statistic*
+> coef: specifying which coefficient or contrast of the linear model is of interest 
+
+coef=1 we are looking at  present10-absent10
+```{r}
+topTable(fit2, coef=1, n=5)
+```
+
+
+coef=2 we are looking at present48-absent48
+```{r}
+topTable(fit2, coef=2, n=5)
+```
+
+*plot the gene expression*
+```{r}
+qplot(x=f, y=exprs(eset)["39642_at",],) + 
+  geom_point(aes(shape=targets$estrogen, 
+                 colour=targets$time.h), size=4)
+```
+
+## Question 6 
+chose 910_at because it was listed in both toptables 
+```{r}
+which(rownames(exprs(eset))=="910_at")
+
+#12472
+```
+
+*logFc*
+
+```{r}
+mean_10_high[12472]-mean_10_low[12472] #10h
+#3.113733
+mean_48_high[12472]-mean_48_low[12472] #48h
+#3.855061   
+```
+
+*average expression* 
+>  is the average normalized expression value of all samples 
+
+```{r}
+mean(exprs(eset)[12472,])
+```
+
+
