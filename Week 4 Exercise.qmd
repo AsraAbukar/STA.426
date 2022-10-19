@@ -183,7 +183,7 @@ The moderated t-test is seems to be better in separating the differential from n
 
 *False discovery plot*
 
-for the classical t-test
+moderated t-test
 ```{r}
 library(fdrtool)
 
@@ -202,8 +202,13 @@ fdr = fdrtool(p_values, statistic = "pvalue")
 
 log-Fold chnage 
 
+```{r}
+true_foldchange = rep(0,nrow(y))
+true_foldchange[indD] = diff
 
 
+t.test(true_foldchange, foldchange)
+```
 
 
 unzipping and loading the data
@@ -311,6 +316,12 @@ which(rownames(exprs(eset))=="910_at")
 *logFc*
 
 ```{r}
+
+mean_10_low = apply(exprs(eset)[,1:2],1,mean)
+mean_10_high = apply(exprs(eset)[,3:4],1,mean)
+mean_48_low = apply(exprs(eset)[,5:6],1,mean)
+mean_48_high = apply(exprs(eset)[,7:8],1,mean)
+
 mean_10_high[12472]-mean_10_low[12472] #10h
 #3.113733
 mean_48_high[12472]-mean_48_low[12472] #48h
